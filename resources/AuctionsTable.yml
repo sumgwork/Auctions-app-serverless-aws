@@ -6,6 +6,19 @@ AuctionsTable: #Logical ID
     AttributeDefinitions:
       - AttributeName: id
         AttributeType: S # S -> String
+      - AttributeName: status
+        AttributeType: S
+      - AttributeName: endingAt
+        AttributeType: S
     KeySchema:
       - AttributeName: id # Partition Key
         KeyType: HASH
+    GlobalSecondaryIndexes:
+      - IndexName: statusAndEndDate
+        KeySchema:
+          - AttributeName: status
+            KeyType: HASH
+          - AttributeName: endingAt
+            KeyType: RANGE
+        Projection:
+          ProjectionType: ALL

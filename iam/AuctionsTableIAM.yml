@@ -5,5 +5,12 @@ AuctionsTableIAM:
     - dynamodb:Scan
     - dynamodb:GetItem
     - dynamodb:UpdateItem
+    - dynamodb:Query
   Resource:
     - ${self:custom.AuctionsTable.arn}
+    # Intrinsic function (Cloudformation): takes all items in array and join them with delimiter (/)
+    # This will yield: ${self:custom.AuctionsTable.arn}/index/statusAndEndDate
+    - !Join [
+        "/",
+        ["${self:custom.AuctionsTable.arn}", "index", "statusAndEndDate"],
+      ]
