@@ -1,0 +1,11 @@
+AuctionsTable: #Logical ID
+  Type: AWS::DynamoDB::Table
+  Properties:
+    TableName: AuctionsTable-${self:provider.stage} # self - this file, provider - parent file
+    BillingMode: PAY_PER_REQUEST
+    AttributeDefinitions:
+      - AttributeName: id
+        AttributeType: S # S -> String
+    KeySchema:
+      - AttributeName: id # Partition Key
+        KeyType: HASH

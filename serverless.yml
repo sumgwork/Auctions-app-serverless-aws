@@ -1,0 +1,37 @@
+service:
+  name: auction-service
+
+plugins:
+  - serverless-bundle
+  - serverless-pseudo-parameters
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+  memorySize: 256
+  stage: ${opt:stage, 'dev'}
+  region: ap-southeast-2
+  environment:
+    AUCTIONS_TABLE_NAME: ${self:custom.AuctionsTable.name}
+  iamRoleStatements:
+    - ${file(iam/AuctionsTableIAM.yml):AuctionsTableIAM}
+
+resources:
+  Resources: # Cloudformation format ('R')
+    AuctionsTable: ${file(resources/AuctionsTable.yml):AuctionsTable}
+
+functions:
+  createAuction:
+    handler: src/handlers/createAuction.handler
+    events:
+      - http:
+          method: POST
+          path: /auction
+
+# custom object
+custom:
+  AuctionsTable:
+    # The intrinsic function Ref returns the value of the specified parameter or resource.
+    # The Fn::GetAtt intrinsic function returns the value of an attribute from a resource in the template.
+    name: !Ref AuctionsTable
+    arn: !GetAtt AuctionsTable.Arn
